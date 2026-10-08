@@ -1,0 +1,922 @@
+
+:host {
+  display: block;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Arial, sans-serif;
+  color: #1e293b;
+  background: #f6f8fc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+button:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+/* HEADER */
+
+.topbar {
+  max-width: 1400px;
+  margin: auto;
+  padding: 25px 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 47px;
+  height: 47px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: #dbeafe;
+  font-size: 25px;
+}
+
+.brand-text {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.brand-text span {
+  color: #2563eb;
+}
+
+.header-tag {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+/* MAIN */
+
+.main {
+  max-width: 1400px;
+  margin: auto;
+  padding: 38px 35px 65px;
+}
+
+.page-heading {
+  text-align: center;
+  margin-bottom: 42px;
+}
+
+.eyebrow {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 30px;
+  background: #dbeafe;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 1.3px;
+}
+
+.page-heading h1 {
+  margin: 18px 0 12px;
+  font-size: clamp(30px, 4vw, 46px);
+  letter-spacing: -1.5px;
+}
+
+.page-heading p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* LAYOUT */
+
+.converter-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px minmax(0, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.panel {
+  min-width: 0;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 19px;
+  box-shadow: 0 8px 30px #1e293b08;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 22px;
+}
+
+.number {
+  width: 39px;
+  height: 39px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #dbeafe;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.result-number {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.panel-heading h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.panel-heading p {
+  margin: 5px 0 0;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* UPLOAD */
+
+.dropzone {
+  padding: 35px 15px;
+  border: 2px dashed #bfdbfe;
+  border-radius: 14px;
+  background: #f8fbff;
+  text-align: center;
+  transition: 0.2s ease;
+}
+
+.dropzone.dragging,
+.dropzone:hover {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.upload-symbol {
+  width: 65px;
+  height: 65px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 17px;
+  border-radius: 18px;
+  background: #dbeafe;
+  font-size: 30px;
+}
+
+.dropzone h3 {
+  margin: 0 0 9px;
+  font-size: 18px;
+}
+
+.dropzone p {
+  margin: 0 0 22px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.primary-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 13px 22px;
+  background: #2563eb;
+  color: white;
+  font-weight: 700;
+}
+
+.primary-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.secondary-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.secondary-actions button {
+  min-height: 46px;
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.secondary-actions button:hover:not(:disabled) {
+  background: #eff6ff;
+}
+
+/* FILE LIST */
+
+.files-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 23px 0 12px;
+}
+
+.files-header strong {
+  font-size: 13px;
+}
+
+.files-header button {
+  border: none;
+  background: transparent;
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  max-height: 330px;
+  overflow-y: auto;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+}
+
+.file-item img {
+  width: 47px;
+  height: 47px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  object-fit: cover;
+  background: #f1f5f9;
+}
+
+.file-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-details strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.file-details small {
+  display: block;
+  margin-top: 5px;
+  color: #94a3b8;
+  font-size: 10px;
+}
+
+.file-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.file-controls button {
+  width: 26px;
+  height: 28px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #475569;
+}
+
+.file-controls .remove-btn {
+  color: #dc2626;
+  font-size: 19px;
+}
+
+/* LAUNCH BUTTON */
+
+.launch-btn {
+  display: block;
+  width: 100%;
+  margin-top: 23px;
+  padding: 16px 18px;
+  border: none;
+  border-radius: 11px;
+  background: #2563eb;
+  color: white;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.launch-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+/* ROCKET AND SPACE MISSION */
+
+.flight-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  overflow: visible;
+  text-align: center;
+}
+
+.flight-label {
+  padding: 8px 12px;
+  border-radius: 30px;
+  background: #e2e8f0;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.flight-description {
+  max-width: 230px;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.space-scene {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  margin: 12px 0;
+}
+
+.space-path {
+  position: absolute;
+  top: 52%;
+  left: 10%;
+  right: 10%;
+  border-top: 2px dashed #cbd5e1;
+}
+
+/* ROCKET */
+
+.rocket-traveler {
+  position: absolute;
+  z-index: 2;
+  top: 25px;
+  left: 0;
+  width: 100px;
+  height: 150px;
+}
+
+.rocket-rotation {
+  position: relative;
+  width: 100px;
+  height: 150px;
+  transform-origin: center center;
+}
+
+.vertical-rocket {
+  width: 100px;
+  height: 150px;
+  position: relative;
+  z-index: 3;
+  filter: drop-shadow(0 5px 5px #00000022);
+}
+
+/* ROCKET FIRE */
+
+.rocket-flames {
+  position: absolute;
+  z-index: 1;
+  top: 125px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+}
+
+.flame {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  transform-origin: top center;
+  clip-path: polygon(
+    0 0, 100% 0, 80% 65%,
+    50% 100%, 20% 65%
+  );
+  border-radius: 35% 35% 50% 50%;
+}
+
+.flame-red {
+  width: 35px;
+  height: 70px;
+  margin-left: -17.5px;
+  background: #ef2020;
+  filter: drop-shadow(0 0 10px #ff2424);
+}
+
+.flame-orange {
+  width: 24px;
+  height: 53px;
+  margin-left: -12px;
+  background: #ff7900;
+}
+
+.flame-yellow {
+  width: 13px;
+  height: 37px;
+  margin-left: -6.5px;
+  background: #ffe354;
+}
+
+/* FLIGHT ANIMATION */
+
+.space-scene.launching .rocket-traveler {
+  animation: rocket-travel 2.6s ease-in-out forwards;
+}
+
+.space-scene.launching .rocket-rotation {
+  animation: rocket-tilt 2.6s ease-in-out forwards;
+}
+
+.space-scene.launching .rocket-flames {
+  opacity: 1;
+}
+
+.space-scene.launching .flame {
+  animation: flame-flicker 0.15s infinite alternate;
+}
+
+@keyframes rocket-travel {
+  0% {
+    left: 0;
+    top: 25px;
+  }
+
+  18% {
+    left: 8%;
+    top: 5px;
+  }
+
+  75% {
+    left: 65%;
+    top: 10px;
+  }
+
+  100% {
+    left: calc(100% - 100px);
+    top: 25px;
+  }
+}
+
+@keyframes rocket-tilt {
+  0%, 10% {
+    transform: rotate(0deg);
+  }
+
+  28%, 75% {
+    transform: rotate(90deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes flame-flicker {
+  from {
+    scale: 1 0.75;
+    opacity: 0.8;
+  }
+
+  to {
+    scale: 1.12 1.2;
+    opacity: 1;
+  }
+}
+
+/* LANDED ROCKET */
+
+.space-scene.landed .rocket-traveler {
+  left: calc(100% - 100px);
+  top: 25px;
+}
+
+.space-scene.landed .rocket-rotation {
+  transform: rotate(0deg);
+}
+
+.space-scene.landed .rocket-flames {
+  opacity: 0;
+}
+
+/* GALACTIC BUDDY */
+
+.alien-landing {
+  position: absolute;
+  z-index: 5;
+  right: -45px;
+  bottom: -8px;
+  width: 120px;
+  animation: alien-pop 0.6s ease-out both;
+}
+
+.galactic-buddy {
+  display: block;
+  width: 120px;
+  height: 135px;
+  overflow: visible;
+  filter: drop-shadow(0 4px 4px #00000015);
+}
+
+.buddy-thumb {
+  transform-origin: 143px 105px;
+  animation: thumbs-up 0.7s ease-in-out 0.4s both;
+}
+
+.alien-message {
+  padding: 6px 9px;
+  border-radius: 10px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+@keyframes alien-pop {
+  from {
+    opacity: 0;
+    transform: translateY(35px) scale(0.5);
+  }
+
+  70% {
+    transform: translateY(-10px) scale(1.08);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes thumbs-up {
+  from {
+    transform: rotate(-25deg) scale(0.7);
+  }
+
+  to {
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+/* RESULT PANEL */
+
+.result-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.empty-result,
+.result-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 25px 5px;
+}
+
+.empty-icon {
+  width: 88px;
+  height: 88px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 18px;
+  border-radius: 24px;
+  background: #f1f5f9;
+  font-size: 40px;
+}
+
+.empty-result h3,
+.result-content h3 {
+  margin: 0 0 10px;
+  font-size: 19px;
+}
+
+.empty-result p,
+.result-content > p {
+  max-width: 250px;
+  margin: 0;
+  color: #94a3b8;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.success-icon {
+  width: 74px;
+  height: 74px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #16a34a;
+  font-size: 37px;
+  font-weight: 800;
+}
+
+.pdf-file {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 24px 0 16px;
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.pdf-icon {
+  width: 44px;
+  height: 49px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.pdf-info {
+  min-width: 0;
+}
+
+.pdf-info strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.pdf-info small {
+  display: block;
+  margin-top: 5px;
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.open-btn {
+  width: 150px;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 10px;
+  background: #16a34a;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.open-btn:hover {
+  background: #15803d;
+}
+
+.download-btn {
+  margin-top: 13px;
+  padding: 10px 15px;
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* NOTIFICATIONS */
+
+.notification {
+  max-width: 700px;
+  margin: 25px auto 0;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: #dcfce7;
+  color: #166534;
+  text-align: center;
+  font-size: 13px;
+}
+
+.notification.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+footer {
+  margin-top: 35px;
+  color: #94a3b8;
+  text-align: center;
+  font-size: 12px;
+}
+
+/* CAMERA */
+
+.camera-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: #0f172acc;
+}
+
+.camera-dialog {
+  width: min(100%, 620px);
+  padding: 20px;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 20px 70px #0004;
+}
+
+.camera-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.camera-header h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.camera-header button {
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  color: #475569;
+}
+
+.camera-dialog video {
+  display: block;
+  width: 100%;
+  max-height: 60vh;
+  border-radius: 11px;
+  background: #0f172a;
+  object-fit: contain;
+}
+
+.camera-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.cancel-btn {
+  padding: 12px 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: white;
+}
+
+/* TABLET */
+
+@media (max-width: 1100px) {
+  .converter-layout {
+    grid-template-columns: minmax(0, 1fr) 160px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .panel {
+    padding: 18px;
+  }
+
+  .alien-landing {
+    right: -25px;
+  }
+}
+
+/* MOBILE / ANDROID */
+
+@media (max-width: 760px) {
+  .topbar {
+    padding: 18px 16px;
+  }
+
+  .brand-text {
+    font-size: 21px;
+  }
+
+  .header-tag {
+    font-size: 9px;
+    letter-spacing: 0.5px;
+  }
+
+  .main {
+    padding: 24px 15px 60px;
+  }
+
+  .page-heading {
+    margin-bottom: 25px;
+  }
+
+  .page-heading h1 {
+    font-size: 32px;
+  }
+
+  .converter-layout {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .panel {
+    padding: 19px;
+  }
+
+  .flight-panel {
+    min-height: 280px;
+  }
+
+  .space-scene {
+    max-width: 340px;
+    height: 230px;
+  }
+
+  .alien-landing {
+    right: -10px;
+  }
+
+  .empty-result {
+    min-height: 210px;
+  }
+
+  .result-content {
+    padding: 25px 10px;
+  }
+
+  .file-list {
+    max-height: 280px;
+  }
+}
+
+@media (max-width: 390px) {
+  .header-tag {
+    display: none;
+  }
+
+  .file-item {
+    gap: 7px;
+  }
+
+  .file-controls button {
+    width: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .space-scene.launching .rocket-traveler,
+  .space-scene.launching .rocket-rotation,
+  .space-scene.launching .flame,
+  .alien-landing,
+  .buddy-thumb {
+    animation: none;
+  }
+}
