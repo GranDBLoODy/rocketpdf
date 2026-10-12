@@ -14,6 +14,9 @@ interface SelectedImage {
   id: number;
   file: File;
   previewUrl: string;
+  format: 'png' | 'jpeg';
+  width: number;
+  height: number;
 }
 
 @Component({
@@ -32,6 +35,7 @@ export class App implements OnDestroy {
   isDragging = false;
   isConverting = false;
   cameraOpen = false;
+  conversionProgress = 0;
 
   convertedPdfUrl: string | null = null;
   convertedFileName = '';
@@ -43,6 +47,7 @@ export class App implements OnDestroy {
   private nextId = 1;
   private cameraStream: MediaStream | null = null;
   private readonly maxFileSize = 50 * 1024 * 1024;
+  private readonly maxTotalFileSize = 50 * 1024 * 1024;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -55,56 +60,165 @@ export class App implements OnDestroy {
     const input = event.target as HTMLInputElement;
 
     if (input.files) {
-      this.addFiles(Array.from(input.files));
+      void this.addFiles(Array.from(input.files));
     }
 
     input.value = '';
   }
 
-  private addFiles(files: File[]): void {
+  private async addFiles(files: File[]): Promise<void> {
     if (this.isConverting) return;
 
     let accepted = 0;
-    let rejected = 0;
+    let unsupported = 0;
+    let oversized = 0;
+    let totalLimit = 0;
+    let unreadable = 0;
+    let selectedTotalSize = this.selectedFiles.reduce(
+      (sum, item) => sum + item.file.size,
+      0
+    );
 
     for (const file of files) {
-      const supported =
-        file.type === 'image/png' ||
-        file.type === 'image/jpeg';
+      const format = this.getImageFormat(file);
 
-      if (
-        !supported ||
-        file.size === 0 ||
-        file.size > this.maxFileSize
-      ) {
-        rejected++;
+      if (!format) {
+        unsupported++;
         continue;
       }
 
-      this.selectedFiles.push({
-        id: this.nextId++,
-        file,
-        previewUrl: URL.createObjectURL(file)
-      });
+      if (file.size === 0 || file.size > this.maxFileSize) {
+        oversized++;
+        continue;
+      }
 
-      accepted++;
+      if (selectedTotalSize + file.size > this.maxTotalFileSize) {
+        totalLimit++;
+        continue;
+      }
+
+      const previewUrl = URL.createObjectURL(file);
+
+      try {
+        const dimensions = await this.readImageDimensions(previewUrl);
+
+        selectedTotalSize += file.size;
+
+        this.selectedFiles.push({
+          id: this.nextId++,
+          file,
+          previewUrl,
+          format,
+          width: dimensions.width,
+          height: dimensions.height
+        });
+
+        accepted++;
+      } catch (error) {
+        console.error('Image preview failed:', error);
+        URL.revokeObjectURL(previewUrl);
+        unreadable++;
+      }
     }
 
     if (accepted > 0) {
       this.resetConvertedResult();
     }
 
-    if (rejected > 0) {
-      this.showMessage(
-        `${rejected} file(s) skipped. Use PNG/JPEG files up to 50 MB.`,
-        'error'
+    const validationMessages: string[] = [];
+
+    if (unsupported > 0) {
+      validationMessages.push(
+        `${unsupported} unsupported file(s) skipped. Use PNG or JPEG images.`
       );
+    }
+
+    if (oversized > 0) {
+      validationMessages.push(
+        `${oversized} oversized file(s) skipped. Each image must be 50 MB or less.`
+      );
+    }
+
+    if (totalLimit > 0) {
+      validationMessages.push(
+        `${totalLimit} file(s) skipped. Total selected images must stay under 50 MB.`
+      );
+    }
+
+    if (unreadable > 0) {
+      validationMessages.push(
+        `${unreadable} image file(s) could not be read.`
+      );
+    }
+
+    if (validationMessages.length > 0) {
+      this.showMessage(validationMessages.join(' '), 'error');
     } else if (accepted > 0) {
       this.message = '';
       this.messageType = '';
     }
 
     this.cdr.detectChanges();
+  }
+
+  private getImageFormat(file: File): 'png' | 'jpeg' | null {
+    const name = file.name.toLowerCase();
+
+    if (file.type === 'image/png' || name.endsWith('.png')) {
+      return 'png';
+    }
+
+    if (
+      file.type === 'image/jpeg' ||
+      name.endsWith('.jpg') ||
+      name.endsWith('.jpeg')
+    ) {
+      return 'jpeg';
+    }
+
+    return null;
+  }
+
+  private readImageDimensions(
+    previewUrl: string
+  ): Promise<{ width: number; height: number }> {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+
+      image.onload = () => {
+        resolve({
+          width: image.naturalWidth,
+          height: image.naturalHeight
+        });
+      };
+
+      image.onerror = () => {
+        reject(new Error('Image could not be loaded'));
+      };
+
+      image.src = previewUrl;
+    });
+  }
+
+  getSelectedTotalSize(): string {
+    const total = this.selectedFiles.reduce(
+      (sum, item) => sum + item.file.size,
+      0
+    );
+
+    return this.formatFileSize(total);
+  }
+
+  getSelectedTotalPercent(): number {
+    const total = this.selectedFiles.reduce(
+      (sum, item) => sum + item.file.size,
+      0
+    );
+
+    return Math.min(
+      100,
+      Math.round((total / this.maxTotalFileSize) * 100)
+    );
   }
 
   // DRAG AND DROP
@@ -127,7 +241,7 @@ export class App implements OnDestroy {
     this.isDragging = false;
 
     if (event.dataTransfer?.files) {
-      this.addFiles(Array.from(event.dataTransfer.files));
+      void this.addFiles(Array.from(event.dataTransfer.files));
     }
   }
 
@@ -260,17 +374,15 @@ export class App implements OnDestroy {
       return;
     }
 
-    this.zone.run(() => {
-      const file = new File(
-        [blob],
-        `photo-${Date.now()}.jpg`,
-        { type: 'image/jpeg' }
-      );
+    const file = new File(
+      [blob],
+      `photo-${Date.now()}.jpg`,
+      { type: 'image/jpeg' }
+    );
 
-      this.addFiles([file]);
-      this.closeCamera();
-      this.cdr.detectChanges();
-    });
+    await this.addFiles([file]);
+    this.closeCamera();
+    this.cdr.detectChanges();
   }
 
   closeCamera(): void {
@@ -296,6 +408,7 @@ export class App implements OnDestroy {
     }
 
     this.isConverting = true;
+    this.conversionProgress = 0;
     this.message = '';
     this.messageType = '';
 
@@ -323,7 +436,7 @@ export class App implements OnDestroy {
 
         const bytes = await item.file.arrayBuffer();
 
-        const image = item.file.type === 'image/png'
+        const image = item.format === 'png'
           ? await pdf.embedPng(bytes)
           : await pdf.embedJpg(bytes);
 
@@ -338,13 +451,24 @@ export class App implements OnDestroy {
           width: image.width,
           height: image.height
         });
+
+        this.conversionProgress = Math.round(
+          ((i + 1) / this.selectedFiles.length) * 85
+        );
+        this.cdr.detectChanges();
       }
 
       console.log('Saving PDF...');
 
       const pdfBytes = await pdf.save();
 
+      if (pdfBytes.length > this.maxTotalFileSize) {
+        throw new Error('Generated PDF exceeds 50 MB');
+      }
+
       console.log('PDF generated:', pdfBytes.length, 'bytes');
+      this.conversionProgress = 95;
+      this.cdr.detectChanges();
 
       const output = new Uint8Array(pdfBytes.length);
       output.set(pdfBytes);
@@ -378,13 +502,15 @@ export class App implements OnDestroy {
         this.convertedPageCount = this.selectedFiles.length;
 
         this.isConverting = false;
+        this.conversionProgress = 100;
 
         this.showMessage(
-          'Mission accomplished! Your PDF is ready.',
+          'Mission accomplished! Your PDF is ready and the download has started.',
           'success'
         );
 
         this.cdr.detectChanges();
+        this.triggerPdfDownload();
       });
 
       console.log('Rocket PDF: Conversion completed');
@@ -394,9 +520,12 @@ export class App implements OnDestroy {
 
       this.zone.run(() => {
         this.isConverting = false;
+        this.conversionProgress = 0;
 
         this.showMessage(
-          'Conversion failed. Check the browser console for details.',
+          error instanceof Error && error.message.includes('50 MB')
+            ? 'Conversion failed. The generated PDF would exceed 50 MB.'
+            : 'Conversion failed. Try another PNG or JPEG image.',
           'error'
         );
 
@@ -431,6 +560,12 @@ export class App implements OnDestroy {
   downloadPdf(): void {
     if (!this.convertedPdfUrl) return;
 
+    this.triggerPdfDownload();
+  }
+
+  private triggerPdfDownload(): void {
+    if (!this.convertedPdfUrl) return;
+
     const link = document.createElement('a');
     link.href = this.convertedPdfUrl;
     link.download = this.convertedFileName;
@@ -450,6 +585,7 @@ export class App implements OnDestroy {
     this.convertedPdfUrl = null;
     this.convertedFileName = '';
     this.convertedPageCount = 0;
+    this.conversionProgress = 0;
   }
 
   private showMessage(
