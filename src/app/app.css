@@ -54,7 +54,7 @@ button:focus-visible {
   height: 47px;
   display: grid;
   place-items: center;
-  border-radius: 14px;
+  border-radius: 8px;
   background: #dbeafe;
   font-size: 25px;
 }
@@ -62,7 +62,7 @@ button:focus-visible {
 .brand-text {
   font-size: 24px;
   font-weight: 800;
-  letter-spacing: -1px;
+  letter-spacing: 0;
 }
 
 .brand-text span {
@@ -102,8 +102,8 @@ button:focus-visible {
 
 .page-heading h1 {
   margin: 18px 0 12px;
-  font-size: clamp(30px, 4vw, 46px);
-  letter-spacing: -1.5px;
+  font-size: 46px;
+  letter-spacing: 0;
 }
 
 .page-heading p {
@@ -126,7 +126,7 @@ button:focus-visible {
   padding: 24px;
   background: #fff;
   border: 1px solid #e2e8f0;
-  border-radius: 19px;
+  border-radius: 8px;
   box-shadow: 0 8px 30px #1e293b08;
 }
 
@@ -143,7 +143,7 @@ button:focus-visible {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  border-radius: 12px;
+  border-radius: 8px;
   background: #dbeafe;
   color: #2563eb;
   font-size: 13px;
@@ -171,7 +171,7 @@ button:focus-visible {
 .dropzone {
   padding: 35px 15px;
   border: 2px dashed #bfdbfe;
-  border-radius: 14px;
+  border-radius: 8px;
   background: #f8fbff;
   text-align: center;
   transition: 0.2s ease;
@@ -189,7 +189,7 @@ button:focus-visible {
   display: grid;
   place-items: center;
   margin: 0 auto 17px;
-  border-radius: 18px;
+  border-radius: 8px;
   background: #dbeafe;
   font-size: 30px;
 }
@@ -207,7 +207,7 @@ button:focus-visible {
 
 .primary-btn {
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 13px 22px;
   background: #2563eb;
   color: white;
@@ -229,7 +229,7 @@ button:focus-visible {
   min-height: 46px;
   padding: 10px;
   border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #fff;
   color: #334155;
   font-size: 12px;
@@ -250,8 +250,20 @@ button:focus-visible {
   margin: 23px 0 12px;
 }
 
+.files-header > div {
+  min-width: 0;
+}
+
 .files-header strong {
+  display: block;
   font-size: 13px;
+}
+
+.files-header small {
+  display: block;
+  margin-top: 4px;
+  color: #94a3b8;
+  font-size: 11px;
 }
 
 .files-header button {
@@ -276,14 +288,14 @@ button:focus-visible {
   gap: 10px;
   padding: 9px;
   border: 1px solid #e2e8f0;
-  border-radius: 11px;
+  border-radius: 8px;
 }
 
 .file-item img {
   width: 47px;
   height: 47px;
   flex-shrink: 0;
-  border-radius: 7px;
+  border-radius: 6px;
   object-fit: cover;
   background: #f1f5f9;
 }
@@ -335,7 +347,7 @@ button:focus-visible {
   margin-top: 23px;
   padding: 16px 18px;
   border: none;
-  border-radius: 11px;
+  border-radius: 8px;
   background: #2563eb;
   color: white;
   font-size: 14px;
@@ -344,6 +356,57 @@ button:focus-visible {
 
 .launch-btn:hover:not(:disabled) {
   background: #1d4ed8;
+}
+
+.capacity-meter,
+.progress-block {
+  margin-top: 14px;
+  padding: 13px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.capacity-meter > div:first-child,
+.progress-block > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 9px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.capacity-meter strong,
+.progress-block strong {
+  color: #1e293b;
+}
+
+.meter-track,
+.progress-track {
+  position: relative;
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.meter-track span,
+.progress-track span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  min-width: 4px;
+  border-radius: inherit;
+}
+
+.meter-track span {
+  background: #2563eb;
+}
+
+.progress-track span {
+  background: linear-gradient(90deg, #2563eb, #16a34a);
+  transition: width 0.2s ease;
 }
 
 /* ROCKET AND SPACE MISSION */

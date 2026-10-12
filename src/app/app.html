@@ -79,9 +79,14 @@
 
         @if (selectedFiles.length > 0) {
           <div class="files-header">
-            <strong>
-              Selected files ({{ selectedFiles.length }})
-            </strong>
+            <div>
+              <strong>
+                Selected files ({{ selectedFiles.length }})
+              </strong>
+              <small>
+                {{ getSelectedTotalSize() }} of 50 MB used
+              </small>
+            </div>
 
             <button
               type="button"
@@ -107,7 +112,8 @@
 
                   <small>
                     Page {{ i + 1 }} ·
-                    {{ formatFileSize(item.file.size) }}
+                    {{ formatFileSize(item.file.size) }} ·
+                    {{ item.width }}×{{ item.height }}
                   </small>
                 </div>
 
@@ -148,8 +154,44 @@
           [disabled]="selectedFiles.length === 0 || isConverting"
           (click)="convertToPdf()"
         >
-          {{ isConverting ? '🚀 Rocket launching...' : '🚀 Launch conversion' }}
+          {{ isConverting ? 'Converting...' : 'Convert Now' }}
         </button>
+
+        @if (selectedFiles.length > 0) {
+          <div
+            class="capacity-meter"
+            aria-label="Selected image storage capacity"
+          >
+            <div>
+              <span>Selected image total</span>
+              <strong>{{ getSelectedTotalPercent() }}%</strong>
+            </div>
+            <div class="meter-track">
+              <span
+                [style.width.%]="getSelectedTotalPercent()"
+              ></span>
+            </div>
+          </div>
+        }
+
+        @if (isConverting) {
+          <div
+            class="progress-block"
+            role="status"
+            aria-live="polite"
+          >
+            <div>
+              <span>Conversion progress</span>
+              <strong>{{ conversionProgress }}%</strong>
+            </div>
+            <div
+              class="progress-track"
+              aria-label="Conversion progress"
+            >
+              <span [style.width.%]="conversionProgress"></span>
+            </div>
+          </div>
+        }
       </section>
 
       <!-- CENTER: ROCKET AND GALACTIC BUDDY -->
@@ -352,7 +394,7 @@
               class="download-btn"
               (click)="downloadPdf()"
             >
-              ↓ Download PDF
+              Download PDF
             </button>
           </div>
         } @else {
